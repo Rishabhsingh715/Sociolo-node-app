@@ -7,10 +7,12 @@ module.exports.profile = function(req,res){
                 return res.render('user_profile',{
                     title: "user Profile",
                     user: user
-                })
+                }) 
+            }else{
+                return res.redirect('/users/sign-in');
+
             }
 
-            return res.redirect('/users/sign-in');
         });
     }else{
         return res.redirect('/users/sign-in');
