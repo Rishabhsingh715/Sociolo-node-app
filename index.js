@@ -1,14 +1,15 @@
 const express = require('express');
-const app = express();
 const port = 8002;
 const cookieParser = require('cookie-parser');
+const app = express();
+ 
 const db = require('./config/mongoose');
 
 //used for session cookie
 const session = require('express-session');
 const passport = require('passport');
 const passportLocal = require('./config/passport-local-strategy');
-
+const MongoStore = require('connect-mongo');
 
 
 //set up the view engine
@@ -17,6 +18,7 @@ app.set('views','./views');
 
 app.use(express.urlencoded());
 
+//middleware -> takes the session cookie and encrypts it..
 app.use(session({
     name: 'sociolo',
     secret: 'blah',
@@ -24,12 +26,23 @@ app.use(session({
     resave: false,
     cookie: {
         maxAge: (1000 * 60 * 100)
-    }
+    },
+    // store: MongoStore.create(            //problem with the mongoStore because of the change in the library code..
+    //     {
+    //         mongoUrl: db,
+    //         autoRemove: 'disabled'
+    //     },
+    //     function(err){
+    //         console.log(err || 'connect-mongodb setup ok');
+    //     }
+    // )
 }));
 
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(passport.setAuthenticatedUser);
 
 app.use('/', require('./routes'));
 
