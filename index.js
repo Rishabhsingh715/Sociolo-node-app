@@ -11,11 +11,21 @@ const passport = require('passport');
 const passportLocal = require('./config/passport-local-strategy');
 const MongoStore = require('connect-mongo');
 
+const sassMiddleware = require('node-sass-middleware');
+
+app.use(sassMiddleware({
+    src: './assets/scss',
+    dest: './assets/css',
+    debug: true, 
+    outputStyle: 'extended',
+    prefix: '/css'
+}));
 
 //set up the view engine
 app.set('view engine', 'ejs');
 app.set('views','./views');
 
+//middleware     
 app.use(express.urlencoded());
 
 //middleware -> takes the session cookie and encrypts it..
